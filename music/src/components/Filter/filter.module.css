@@ -71,3 +71,8 @@
     border-radius: 10px;
   }
 }
+
+.filter__button_active {
+  color: rgba(182, 114, 255, 1) !important;
+  border-color: rgba(182, 114, 255, 1) !important;
+}

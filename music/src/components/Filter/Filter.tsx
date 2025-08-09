@@ -61,24 +61,29 @@ export default function Filter() {
 
   return (
     <div className={style.centerblock__filter}>
-      <div className={style.filter__title}>Искать по:</div>
       <div
         ref={buttonRefs.author}
-        className={style.filter__button}
+        className={`${style.filter__button} ${
+          openFilter === 'author' ? style.filter__button_active : ''
+        }`}
         onClick={() => toggleFilter('author')}
       >
         Исполнителю
       </div>
       <div
         ref={buttonRefs.year}
-        className={style.filter__button}
+        className={`${style.filter__button} ${
+          openFilter === 'year' ? style.filter__button_active : ''
+        }`}
         onClick={() => toggleFilter('year')}
       >
         Году выпуска
       </div>
       <div
         ref={buttonRefs.genre}
-        className={style.filter__button}
+        className={`${style.filter__button} ${
+          openFilter === 'genre' ? style.filter__button_active : ''
+        }`}
         onClick={() => toggleFilter('genre')}
       >
         Жанру
