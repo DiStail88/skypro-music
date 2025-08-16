@@ -1,11 +1,75 @@
-import Image from 'next/image';
+'use client';
 import Link from 'next/link';
 import classnames from 'classnames';
 import style from './bar.module.css';
+import { useAppSelector, useAppDispatch } from '@/store/store';
+import { useRef, useEffect } from 'react';
+import { setIsPlay, togglePlay } from '@/store/features/trackSlice';
 
 export default function Bar() {
+  const dispatch = useAppDispatch();
+  const { currentTrack, isPlay } = useAppSelector((state) => state.tracks);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const handlePlayPause = () => {
+    dispatch(togglePlay());
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlay) {
+      audio
+        .play()
+        .catch((err) => console.warn('Автовоспроизведение заблокировано', err));
+    } else {
+      audio.pause();
+    }
+  }, [isPlay]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !currentTrack) return;
+
+    const handleLoaded = () => {
+      if (isPlay) {
+        audio
+          .play()
+          .catch((err) =>
+            console.warn('Автовоспроизведение заблокировано', err),
+          );
+      }
+    };
+
+    audio.addEventListener('loadeddata', handleLoaded);
+    return () => {
+      audio.removeEventListener('loadeddata', handleLoaded);
+    };
+  }, [currentTrack, isPlay]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleEnded = () => {
+      dispatch(setIsPlay(false));
+    };
+
+    audio.addEventListener('ended', handleEnded);
+    return () => {
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, [dispatch]);
+
+  if (!currentTrack) return null;
+
   return (
     <div className={style.bar}>
+      <audio
+        ref={audioRef}
+        src={currentTrack?.track_file}
+        style={{ display: 'none' }}
+      ></audio>
       <div className={style.bar__content}>
         <div className={style.bar__playerProgress}></div>
         <div className={style.bar__playerBlock}>
@@ -16,9 +80,14 @@ export default function Bar() {
                   <use xlinkHref="/img/icon/sprite.svg#icon-prev"></use>
                 </svg>
               </div>
-              <div className={classnames(style.player__btnPlay, style.btn)}>
+              <div
+                className={classnames(style.player__btnPlay, style.btn)}
+                onClick={handlePlayPause}
+              >
                 <svg className={style.player__btnPlaySvg}>
-                  <use xlinkHref="/img/icon/sprite.svg#icon-play"></use>
+                  <use
+                    xlinkHref={`/img/icon/sprite.svg#${isPlay ? 'icon-pause' : 'icon-play'}`}
+                  ></use>
                 </svg>
               </div>
               <div className={style.player__btnNext}>
@@ -51,12 +120,12 @@ export default function Bar() {
                 </div>
                 <div className={style.trackPlay__author}>
                   <Link className={style.trackPlay__authorLink} href="">
-                    Ты та...
+                    {currentTrack?.name}
                   </Link>
                 </div>
                 <div className={style.trackPlay__album}>
                   <Link className={style.trackPlay__albumLink} href="">
-                    Баста
+                    {currentTrack?.author}
                   </Link>
                 </div>
               </div>
@@ -97,6 +166,14 @@ export default function Bar() {
                   className={classnames(style.volume__progressLine, style.btn)}
                   type="range"
                   name="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  onChange={(e) => {
+                    if (audioRef.current) {
+                      audioRef.current.volume = Number(e.target.value);
+                    }
+                  }}
                 />
               </div>
             </div>

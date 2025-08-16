@@ -1,21 +1,51 @@
+'use client';
+
 import Link from 'next/link';
 import style from './track.module.css';
 import { formatTime } from '@/utils/helper';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { setCurrentTrack } from '@/store/features/trackSlice';
 
 type TrackProps = {
   track: TrackType;
 };
 
 export default function Track({ track }: TrackProps) {
+  const dispatch = useAppDispatch();
+  const { currentTrack, isPlay } = useAppSelector((state) => state.tracks);
+
+  const onClickTrack = () => {
+    dispatch(setCurrentTrack(track));
+  };
+
+  const isCurrent = currentTrack?._id === track._id;
+
   return (
-    <div key={track._id} className={style.playlist__item}>
+    <div
+      key={track._id}
+      className={style.playlist__item}
+      onClick={onClickTrack}
+    >
       <div className={style.playlist__track}>
         <div className={style.track__title}>
-          <div className={style.track__titleImage}>
+          <div
+            className={style.track__titleImage}
+            style={{ position: 'relative' }}
+          >
             <svg className={style.track__titleSvg}>
               <use xlinkHref="/img/icon/sprite.svg#icon-note"></use>
             </svg>
+
+            {/* Точка */}
+            {isCurrent && (
+              <span
+                className={`${style.track__playingDot} ${
+                  isPlay ? style.pulsing : ''
+                }`}
+              ></span>
+            )}
           </div>
+
           <div className="track__title-text">
             <Link className={style.track__titleLink} href="">
               {track.name}
