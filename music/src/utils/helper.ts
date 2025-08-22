@@ -13,14 +13,11 @@ export function getUniqueValuesByKey(
   arr.forEach((item) => {
     const value = item[key];
 
-    // Если массив строк
     if (Array.isArray(value)) {
       value.forEach((v) => {
         if (v) uniqueValues.add(v);
       });
-    }
-    // Если одна строка
-    else if (typeof value === 'string') {
+    } else if (typeof value === 'string') {
       uniqueValues.add(value);
     }
   });

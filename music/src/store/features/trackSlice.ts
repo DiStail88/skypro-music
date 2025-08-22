@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type initialStateType = {
-  currentTrack: null | TrackType;
+  tracks: TrackType[];
+  currentTrack: TrackType | null;
   isPlay: boolean;
 };
 
 const initialState: initialStateType = {
+  tracks: [],
   currentTrack: null,
   isPlay: false,
 };
@@ -14,9 +16,12 @@ const trackSlice = createSlice({
   name: 'tracks',
   initialState,
   reducers: {
+    setTracks: (state, action: PayloadAction<TrackType[]>) => {
+      state.tracks = action.payload;
+    },
     setCurrentTrack: (state, action: PayloadAction<TrackType>) => {
       state.currentTrack = action.payload;
-      state.isPlay = true; // сразу включаем
+      state.isPlay = true;
     },
     setIsPlay: (state, action: PayloadAction<boolean>) => {
       state.isPlay = action.payload;
@@ -24,8 +29,64 @@ const trackSlice = createSlice({
     togglePlay: (state) => {
       state.isPlay = !state.isPlay;
     },
+    nextTrack: (
+      state,
+      action: PayloadAction<{ shuffle?: boolean } | undefined>,
+    ) => {
+      if (!state.currentTrack) return;
+
+      const shuffle = action?.payload?.shuffle || false;
+
+      if (shuffle && state.tracks.length > 1) {
+        let randomIndex = Math.floor(Math.random() * state.tracks.length);
+        while (state.tracks[randomIndex]._id === state.currentTrack._id) {
+          randomIndex = Math.floor(Math.random() * state.tracks.length);
+        }
+        state.currentTrack = state.tracks[randomIndex];
+      } else {
+        const index = state.tracks.findIndex(
+          (t) => t._id === state.currentTrack!._id,
+        );
+        state.currentTrack = state.tracks[(index + 1) % state.tracks.length];
+      }
+
+      state.isPlay = true;
+    },
+
+    prevTrack: (
+      state,
+      action: PayloadAction<{ shuffle?: boolean } | undefined>,
+    ) => {
+      if (!state.currentTrack) return;
+
+      const shuffle = action?.payload?.shuffle || false;
+
+      if (shuffle && state.tracks.length > 1) {
+        let randomIndex = Math.floor(Math.random() * state.tracks.length);
+        while (state.tracks[randomIndex]._id === state.currentTrack._id) {
+          randomIndex = Math.floor(Math.random() * state.tracks.length);
+        }
+        state.currentTrack = state.tracks[randomIndex];
+      } else {
+        const index = state.tracks.findIndex(
+          (t) => t._id === state.currentTrack!._id,
+        );
+        const prevIndex =
+          (index - 1 + state.tracks.length) % state.tracks.length;
+        state.currentTrack = state.tracks[prevIndex];
+      }
+
+      state.isPlay = true;
+    },
   },
 });
 
-export const { setCurrentTrack, setIsPlay, togglePlay } = trackSlice.actions;
+export const {
+  setTracks,
+  setCurrentTrack,
+  setIsPlay,
+  togglePlay,
+  nextTrack,
+  prevTrack,
+} = trackSlice.actions;
 export const trackSliceReducer = trackSlice.reducer;
