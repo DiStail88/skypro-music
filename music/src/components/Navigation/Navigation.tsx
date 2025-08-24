@@ -16,13 +16,15 @@ export default function Navigation() {
   return (
     <nav className={style.main__nav}>
       <div className={style.nav__logo}>
-        <Image
-          width={250}
-          height={170}
-          className={style.logo__image}
-          src="/img/logo.png"
-          alt={'logo'}
-        />
+        <Link href="/" className={style.logo__link}>
+          <Image
+            width={250}
+            height={170}
+            className={style.logo__image}
+            src="/img/logo.png"
+            alt="logo"
+          />
+        </Link>
       </div>
 
       <div className={style.nav__burger} onClick={toggleMenu}>

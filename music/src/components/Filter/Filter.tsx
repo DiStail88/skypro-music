@@ -1,27 +1,36 @@
 'use client';
 import React, { useState, useRef } from 'react';
-import { getUniqueValuesByKey } from '@/utils/helper';
 import FilterItem from '../FilterItem/FilterItem';
-import { data } from '@/data';
 import style from './filter.module.css';
 
 type FilterType = 'author' | 'year' | 'genre' | null;
 
-export default function Filter() {
+type Filters = {
+  author: string;
+  genre: string;
+  year: string;
+};
+
+type FilterProps = {
+  tracks: TrackType[];
+  selectedFilters: Filters;
+  setSelectedFilters: React.Dispatch<React.SetStateAction<Filters>>;
+};
+
+export default function Filter({
+  tracks,
+  selectedFilters,
+  setSelectedFilters,
+}: FilterProps) {
   const [openFilter, setOpenFilter] = useState<FilterType>(null);
-  const [selectedFilters, setSelectedFilters] = useState<{
-    author?: string;
-    genre?: string;
-    year?: string;
-  }>({});
   const buttonRefs = {
     author: useRef<HTMLDivElement>(null),
     year: useRef<HTMLDivElement>(null),
     genre: useRef<HTMLDivElement>(null),
   };
 
-  const uniqueAuthors = getUniqueValuesByKey(data, 'author');
-  const uniqueGenres = getUniqueValuesByKey(data, 'genre');
+  const uniqueAuthors = Array.from(new Set(tracks.map((t) => t.author)));
+  const uniqueGenres = Array.from(new Set(tracks.flatMap((t) => t.genre)));
   const yearOptions = ['Сначала новые', 'Сначала старые', 'По умолчанию'];
 
   function toggleFilter(type: FilterType) {
@@ -36,7 +45,7 @@ export default function Filter() {
     }));
   }
 
-  const getItemsForFilter = () => {
+  const getItemsForFilter = (): string[] => {
     switch (openFilter) {
       case 'author':
         return uniqueAuthors;

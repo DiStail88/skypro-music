@@ -6,11 +6,13 @@ import {
   useStore,
 } from 'react-redux';
 import { trackSliceReducer } from '@/store/features/trackSlice';
+import { userSliceReducer } from '@/store/features/userSlice';
 
 export const makeStore = () => {
   return configureStore({
     reducer: combineReducers({
       tracks: trackSliceReducer,
+      user: userSliceReducer,
     }),
   });
 };
