@@ -21,7 +21,7 @@ export default function Sidebar() {
         <p className={style.sidebar__personalName}>
           {user ? user.username : 'Гость'}
         </p>
-        <div className={style.sidebar__icon}>
+        <div className={style.sidebar__icon} onClick={handleLogout}>
           <svg>
             <use xlinkHref="/img/icon/sprite.svg#logout"></use>
           </svg>
