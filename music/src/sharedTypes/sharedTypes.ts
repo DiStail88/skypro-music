@@ -10,3 +10,9 @@ type TrackType = {
   track_file: string;
   stared_user: string[];
 };
+
+type Filters = {
+  author: string;
+  genre: string;
+  year: string;
+};

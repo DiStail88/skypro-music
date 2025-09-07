@@ -13,7 +13,6 @@ import {
   setTracks,
   setCurrentTrack,
 } from '@/store/features/trackSlice';
-import { data } from '@/data';
 
 export default function Bar() {
   const dispatch = useAppDispatch();
@@ -35,11 +34,6 @@ export default function Bar() {
       audioRef.current.volume = newVolume;
     }
   };
-
-  // Инициализация треков
-  useEffect(() => {
-    if (tracks.length === 0) dispatch(setTracks(data));
-  }, [dispatch, tracks.length]);
 
   // Управление воспроизведением
   useEffect(() => {
@@ -250,16 +244,6 @@ export default function Bar() {
                 >
                   <svg className={style.trackPlay__likeSvg}>
                     <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
-                  </svg>
-                </div>
-                <div
-                  className={classnames(
-                    style.trackPlay__dislike,
-                    style.btnIcon,
-                  )}
-                >
-                  <svg className={style.trackPlay__dislikeSvg}>
-                    <use xlinkHref="/img/icon/sprite.svg#icon-dislike"></use>
                   </svg>
                 </div>
               </div>
