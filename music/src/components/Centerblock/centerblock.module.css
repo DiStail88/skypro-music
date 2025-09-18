@@ -1,14 +1,10 @@
 .centerblock {
-  width: auto;
-  -webkit-box-flex: 3;
-  -ms-flex-positive: 3;
-  flex-grow: 3;
-  padding: 20px 40px 20px 111px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 20px 40px 0 111px;
+  box-sizing: border-box;
 }
-
-
-
-
 
 .centerblock__h2 {
   font-style: normal;
@@ -20,8 +16,6 @@
   color: #ffffff;
 }
 
-
-
 .centerblock__content {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -30,9 +24,8 @@
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
+  overflow: hidden;
 }
-
-
 
 .content__title {
   display: -webkit-box;
@@ -60,6 +53,7 @@
   -ms-flex-direction: column;
   flex-direction: column;
   overflow-y: auto;
+  padding-bottom: 20px;
 }
 
 .playlistTitle__col {
@@ -95,4 +89,3 @@
   width: 60px;
   text-align: end;
 }
-
