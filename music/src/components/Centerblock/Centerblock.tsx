@@ -30,8 +30,19 @@ export default function Centerblock({
     year: '',
   });
 
+  const [search, setSearch] = useState('');
+
   const filteredTracks = useMemo(() => {
     let result = [...tracks];
+
+    if (search) {
+      result = result.filter(
+        (track) =>
+          track.name.toLowerCase().includes(search.toLowerCase()) ||
+          track.author.toLowerCase().includes(search.toLowerCase()) ||
+          track.album.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
 
     if (selectedFilters.author) {
       result = result.filter(
@@ -60,11 +71,11 @@ export default function Centerblock({
     }
 
     return result;
-  }, [tracks, selectedFilters]);
+  }, [tracks, selectedFilters, search]);
 
   return (
     <div className={style.centerblock}>
-      <Search />
+      <Search onSearch={setSearch} />
       <Filter
         tracks={tracks}
         selectedFilters={selectedFilters}

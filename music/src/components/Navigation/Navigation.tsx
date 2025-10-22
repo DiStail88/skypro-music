@@ -15,9 +15,7 @@ export default function Navigation() {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const toggleMenu = () => {
-    setIsOpen((prev) => !prev);
-  };
+  const toggleMenu = () => setIsOpen((prev) => !prev);
 
   const handleLogout = () => {
     dispatch(clearUser());
@@ -55,11 +53,14 @@ export default function Navigation() {
               Главное
             </Link>
           </li>
-          <li className={style.menu__item}>
-            <Link href="/melody/playlist" className={style.menu__link}>
-              Мой плейлист
-            </Link>
-          </li>
+
+          {user && (
+            <li className={style.menu__item}>
+              <Link href="/melody/favorite" className={style.menu__link}>
+                Мой плейлист
+              </Link>
+            </li>
+          )}
 
           {!user ? (
             <li className={style.menu__item}>

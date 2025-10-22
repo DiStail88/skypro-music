@@ -1,15 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { fetchFavoriteTracks } from './trackThunks';
 
 type initialStateType = {
   tracks: TrackType[];
   currentTrack: TrackType | null;
   isPlay: boolean;
+  favoriteTracks: TrackType[];
 };
 
 const initialState: initialStateType = {
   tracks: [],
   currentTrack: null,
   isPlay: false,
+  favoriteTracks: [],
 };
 
 const trackSlice = createSlice({
@@ -78,6 +81,23 @@ const trackSlice = createSlice({
 
       state.isPlay = true;
     },
+
+    // ❤️ Лайки
+    addLikedTrack: (state, action: PayloadAction<TrackType>) => {
+      if (!state.favoriteTracks.some((t) => t._id === action.payload._id)) {
+        state.favoriteTracks.push(action.payload);
+      }
+    },
+    removeLikedTrack: (state, action: PayloadAction<TrackType>) => {
+      state.favoriteTracks = state.favoriteTracks.filter(
+        (t) => t._id !== action.payload._id,
+      );
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchFavoriteTracks.fulfilled, (state, action) => {
+      state.favoriteTracks = action.payload;
+    });
   },
 });
 
@@ -88,5 +108,7 @@ export const {
   togglePlay,
   nextTrack,
   prevTrack,
+  addLikedTrack,
+  removeLikedTrack,
 } = trackSlice.actions;
 export const trackSliceReducer = trackSlice.reducer;

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import classnames from 'classnames';
 import style from './bar.module.css';
 import { useAppSelector, useAppDispatch } from '@/store/store';
+import { useLikeTrack } from '@/hooks/useLikeTrack';
 import {
   setIsPlay,
   togglePlay,
@@ -26,6 +27,7 @@ export default function Bar() {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
+  const { isLike, toggleLike } = useLikeTrack(currentTrack);
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = Number(e.target.value);
@@ -241,9 +243,12 @@ export default function Bar() {
                     style.player__btnShuffle,
                     style.btnIcon,
                   )}
+                  onClick={toggleLike}
                 >
                   <svg className={style.trackPlay__likeSvg}>
-                    <use xlinkHref="/img/icon/sprite.svg#icon-like"></use>
+                    <use
+                      xlinkHref={`/img/icon/sprite.svg#${isLike ? 'icon-like' : 'icon-dislike'}`}
+                    ></use>
                   </svg>
                 </div>
               </div>

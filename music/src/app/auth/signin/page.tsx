@@ -1,12 +1,13 @@
 'use client';
-import { authUser } from '@/services/auth/authApi';
+import { authUser, getTokens } from '@/services/auth/authApi';
 import styles from './signin.module.css';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { ChangeEvent, useState } from 'react';
 import { AxiosError } from 'axios';
 import { useAppDispatch } from '@/store/store';
-import { setUser } from '@/store/features/userSlice';
+import { setUser, setTokens } from '@/store/features/userSlice';
+import { fetchFavoriteTracks } from '@/store/features/trackThunks';
 import { useRouter } from 'next/navigation';
 
 export default function Signin() {
@@ -36,6 +37,15 @@ export default function Signin() {
     authUser({ email, password })
       .then((res) => {
         dispatch(setUser(res.data));
+        return getTokens({ email, password });
+      })
+      .then((tokens) => {
+        dispatch(setTokens(tokens));
+        localStorage.setItem('tokens', JSON.stringify(tokens));
+
+        // 🔥 сразу подгружаем избранные треки
+        dispatch(fetchFavoriteTracks(tokens.access));
+
         router.push('/melody/home');
       })
       .catch((error) => {
